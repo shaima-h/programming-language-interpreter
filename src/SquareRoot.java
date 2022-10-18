@@ -18,5 +18,11 @@ public class SquareRoot extends BuiltInFunctionNode {
 		
 		
 	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

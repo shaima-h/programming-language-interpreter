@@ -16,5 +16,11 @@ public class IntegerToReal extends BuiltInFunctionNode {
 		((FloatDataType) list.get(1)).value = (float) ((IntDataType) list.get(0)).value;
 		
 	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

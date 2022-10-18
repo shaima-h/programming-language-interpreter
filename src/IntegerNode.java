@@ -8,7 +8,7 @@ public class IntegerNode extends Node {
 	/**
 	 * Number value the node represents.
 	 */
-	private int number;
+	int number;
 	
 	/**
 	 * Constructor.
@@ -18,13 +18,13 @@ public class IntegerNode extends Node {
 		this.number = num;
 	}
 	
-	/**
-	 * Returns number value.
-	 * @return Value.
-	 */
-	public int getNum() {
-		return number;
-	}
+//	/**
+//	 * Returns number value.
+//	 * @return Value.
+//	 */
+//	public int getNum() {
+//		return number;
+//	}
 	
 	@Override
 	/**

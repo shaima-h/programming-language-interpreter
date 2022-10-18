@@ -7,6 +7,8 @@ import java.util.List;
  */
 public class Write extends BuiltInFunctionNode {
 
+	boolean variadic = true;
+	
 	public void execute(List<InterpreterDataType> list) throws Exception {
 		
 		if(list.size() == 0) {
@@ -27,6 +29,12 @@ public class Write extends BuiltInFunctionNode {
 			
 		}
 		
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

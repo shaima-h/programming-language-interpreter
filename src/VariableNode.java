@@ -8,7 +8,7 @@ public class VariableNode extends Node {
 	/**
 	 * Name of variable.
 	 */
-	private String name;
+	String name;
 	
 	/**
 	 * Represents if variable is a constant or not.

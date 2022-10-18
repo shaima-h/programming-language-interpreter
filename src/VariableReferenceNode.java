@@ -9,7 +9,7 @@ public class VariableReferenceNode extends Node {
 	/**
 	 * The name of the variable.
 	 */
-	private String name;
+	String name;
 	
 	/**
 	 * Constructor

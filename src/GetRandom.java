@@ -19,5 +19,11 @@ public class GetRandom extends BuiltInFunctionNode {
         ((IntDataType) list.get(0)).value = rand;
         
 	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

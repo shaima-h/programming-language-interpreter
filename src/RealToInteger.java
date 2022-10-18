@@ -15,5 +15,11 @@ public class RealToInteger extends BuiltInFunctionNode {
 		((IntDataType) list.get(1)).value = (int) ((FloatDataType) list.get(0)).value;
 		
 	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

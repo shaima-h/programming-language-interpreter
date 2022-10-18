@@ -201,7 +201,7 @@ public class Parser {
 	 * @return String representing the function.
 	 * @throws Exception
 	 */
-	public String functionDefinition() throws Exception {
+	public FunctionNode functionDefinition() throws Exception {
 		
 		removeEndOfLines();
 		
@@ -243,7 +243,7 @@ public class Parser {
 			
 			function = new FunctionNode(name, parameters, localVars, statements);
 			
-			return function.toString();
+			return function;
 			
 		}
 //		System.out.println("returned null functionDefinition");
@@ -367,7 +367,9 @@ public class Parser {
 		
 		removeEndOfLines();
 		
-		matchAndRemove(Token.Type.VAR); //no further instructions for assignment 6
+		boolean constant = true;
+		if(matchAndRemove(Token.Type.VAR) != null) //use constant value in VariableNode for parameters to show if var or not
+			constant = false;
 		
 		Token id = matchAndRemove(Token.Type.IDENTIFIER);
 		List<Token> ids = new ArrayList<>();
@@ -398,7 +400,7 @@ public class Parser {
 			}
 			
 			for(int i = 0; i < ids.size(); i++) {
-				VariableNode var = new VariableNode(ids.get(i).getValueStr(), type, false, val);
+				VariableNode var = new VariableNode(ids.get(i).getValueStr(), type, constant, val);
 				vars.add(var);
 			}
 					
@@ -744,10 +746,10 @@ public class Parser {
 				if(matchAndRemove(Token.Type.VAR) != null) { //var
 					VariableReferenceNode var = 
 							new VariableReferenceNode(matchAndRemove(Token.Type.IDENTIFIER).getValueStr());
-					parameters.add(var);
+					parameters.add(new ParameterNode(var, true));
 				}
 				else if(value != null) { //identifier or constant
-					parameters.add(value);
+					parameters.add(new ParameterNode(value, false));
 				}
 			} while(matchAndRemove(Token.Type.COMMA) != null);
 			

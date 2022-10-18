@@ -6,6 +6,8 @@ import java.util.List;
  */
 public class Read extends BuiltInFunctionNode {
 	
+	boolean variadic = true;
+	
 	//var a, var b, var c...
 	//takes in Strings --> numeric value
 	public void execute(List<InterpreterDataType> list) throws Exception {
@@ -27,6 +29,12 @@ public class Read extends BuiltInFunctionNode {
 						
 		}
 		
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -8,7 +8,7 @@ public class FloatNode extends Node {
 	/**
 	 * Number value the node represents.
 	 */
-	private float number;
+	float number;
 	
 	/**
 	 * Constructor.
@@ -18,13 +18,13 @@ public class FloatNode extends Node {
 		this.number = num;
 	}
 
-	/**
-	 * Returns number value.
-	 * @return Value.
-	 */
-	public float getNum() {
-		return number;
-	}
+//	/**
+//	 * Returns number value.
+//	 * @return Value.
+//	 */
+//	public float getNum() {
+//		return number;
+//	}
 	
 	@Override
 	/**

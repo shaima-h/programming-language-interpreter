@@ -75,8 +75,19 @@ public class Shank {
             
             Parser parser = new Parser(tokens);
             
-            System.out.println(parser.functionDefinition());
+            Interpreter interpreter = new Interpreter();
             
+            FunctionNode function = parser.functionDefinition();
+            
+            while(function != null) {
+            	System.out.println(function.toString());
+            	
+            	interpreter.addFunction(function.name, function);
+            	function = parser.functionDefinition();
+            }
+            
+            Interpreter.interpretFunction(function, null); //parameters?
+                        
 		
 //            List<Node> nodes = new ArrayList<>();
 //            nodes = parser.parse();
