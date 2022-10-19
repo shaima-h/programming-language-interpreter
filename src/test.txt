@@ -1,14 +1,17 @@
 define start()
+constants
+	pi = 3.14
 variables
 	sqrt : real
 	rand : integer
 	num : real
+	pi_int : integer
 begin
 
 	squareRoot 16.0, var sqrt
 	getRandom var rand
 	integerToReal rand, var num
-	write sqrt
+	realToInteger pi, var pi_int
 	
 	
 end

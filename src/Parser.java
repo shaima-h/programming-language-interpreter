@@ -266,6 +266,7 @@ public class Parser {
 			List<VariableNode> more_constants = new ArrayList<>();
 			
 			constants = processConstants();
+			
 			if(constants == null)
 					throw new Exception("Invalid constant declaration.");
 			
@@ -290,7 +291,7 @@ public class Parser {
 	 * @throws Exception
 	 */
 	public List<VariableNode> processConstants() throws Exception {
-		
+				
 		List<VariableNode> constants = new ArrayList<>();
 		
 		removeEndOfLines();
@@ -320,6 +321,9 @@ public class Parser {
 		
 		matchAndRemove(Token.Type.EndOfLine);
 		
+		if(constants.isEmpty())
+			return null;
+
 		return constants;
 		
 	}

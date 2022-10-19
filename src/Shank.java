@@ -100,9 +100,7 @@ public class Shank {
             System.out.println();
             
             Parser parser = new Parser(tokens);
-            
-            Interpreter interpreter = new Interpreter();
-            
+                        
             FunctionNode function = parser.functionDefinition();
 
             Interpreter.functions.put("read", new Read("read", null, true));
