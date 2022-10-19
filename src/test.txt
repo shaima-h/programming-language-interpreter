@@ -1,17 +1,34 @@
 define start()
-constants
-	pi = 3.14
 variables
-	sqrt : real
-	rand : integer
-	num : real
-	pi_int : integer
+	a : integer
+	i : integer
+	j : integer
 begin
 
-	squareRoot 16.0, var sqrt
-	getRandom var rand
-	integerToReal rand, var num
-	realToInteger pi, var pi_int
+	a := 6
+
+	if a < 5 then 
+	begin
+		a := 5
+	end
+	elsif a > 10 then
+	begin
+		a := 10
+	end
+	else
+	begin
+		a := 7
+	end
 	
+	for i from 1 to 10 
+	begin
+		write i
+	end
+	
+	
+	
+	
+
+
 	
 end
