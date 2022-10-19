@@ -12,10 +12,15 @@ public abstract class BuiltInFunctionNode extends CallableNode {
 	 */
 	boolean variadic;
 	
-//	/**
-//	 * Parameters of function;
-//	 */
-//	List<VariableNode> parameters = new ArrayList<>();
+	public BuiltInFunctionNode(String name, List<VariableNode> parameters, boolean variadic) {
+		super(name, parameters);
+		this.variadic = variadic;
+	}
+	
+	public BuiltInFunctionNode(String name, boolean variadic) {
+		this.name = name;
+		this.variadic = variadic;
+	}
 	
 	/**
 	 * Executes function.

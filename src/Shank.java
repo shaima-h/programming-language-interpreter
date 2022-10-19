@@ -23,6 +23,8 @@ public class Shank {
 //		String test = "(* comment ";
 //		System.out.println(test);
 		
+		
+		
 //		BufferedReader br = new BufferedReader(new FileReader("src/test.txt"));
 //		String line = br.readLine();
 //		
@@ -38,7 +40,31 @@ public class Shank {
 //		System.out.println(tokens);
 //		
 //		Parser parser = new Parser(tokens);
-//		System.out.println(parser.functionDefinition());
+//		        
+//        FunctionNode function = parser.functionDefinition();
+//        
+//        Interpreter.functions.put("read", new Read("read", null, true));
+//        Interpreter.functions.put("write", new Write("write", null, true));
+//        Interpreter.functions.put("squareRoot", new SquareRoot("squareRoot", false));
+//        Interpreter.functions.put("getRandom", new GetRandom("getRandom", false));
+//        Interpreter.functions.put("integerToReal", new IntegerToReal("integerToReal", false));
+//        Interpreter.functions.put("realToInteger", new RealToInteger("realToInteger", false));
+//        
+//        while(function != null) {
+//        	System.out.println(function.toString());
+//        	
+//            Interpreter.functions.put(function.name, function);
+//        	function = parser.functionDefinition();
+//        }
+//        
+//        List<InterpreterDataType> startParams = new ArrayList<>();
+//        
+//        if(Interpreter.functions.get("start") == null) {
+//        	throw new Exception("Start function required.");
+//        }
+//        
+//        
+//        Interpreter.interpretFunction((FunctionNode) Interpreter.functions.get("start"), startParams); //no parameters?
 				
 
 //		List<Node> nodes = new ArrayList<>();
@@ -78,16 +104,29 @@ public class Shank {
             Interpreter interpreter = new Interpreter();
             
             FunctionNode function = parser.functionDefinition();
+
+            Interpreter.functions.put("read", new Read("read", null, true));
+            Interpreter.functions.put("write", new Write("write", null, true));
+            Interpreter.functions.put("squareRoot", new SquareRoot("squareRoot", false));
+            Interpreter.functions.put("getRandom", new GetRandom("getRandom", false));
+            Interpreter.functions.put("integerToReal", new IntegerToReal("integerToReal", false));
+            Interpreter.functions.put("realToInteger", new RealToInteger("realToInteger", false));
             
             while(function != null) {
             	System.out.println(function.toString());
             	
-            	interpreter.addFunction(function.name, function);
+                Interpreter.functions.put(function.name, function);
             	function = parser.functionDefinition();
             }
             
-            Interpreter.interpretFunction(function, null); //parameters?
-                        
+            List<InterpreterDataType> startParams = new ArrayList<>();
+            
+            if(Interpreter.functions.get("start") == null) {
+            	throw new Exception("Start function required.");
+            }         
+		
+            Interpreter.interpretFunction((FunctionNode) Interpreter.functions.get("start"), startParams);
+		
 		
 //            List<Node> nodes = new ArrayList<>();
 //            nodes = parser.parse();

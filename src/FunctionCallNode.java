@@ -15,14 +15,14 @@ public class FunctionCallNode extends StatementNode {
 	/**
 	 * Parameters of function.
 	 */
-	List<Node> parameters = new ArrayList<>();
+	List<ParameterNode> parameters = new ArrayList<>();
 	
 	/**
 	 * Constructor.
 	 * @param name
 	 * @param parameters
 	 */
-	public FunctionCallNode(String name, List<Node> parameters) {
+	public FunctionCallNode(String name, List<ParameterNode> parameters) {
 		this.name = name;
 		this.parameters = parameters;
 	}

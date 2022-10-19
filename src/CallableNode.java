@@ -5,7 +5,7 @@ import java.util.List;
  * Represents a callable function.
  * @author shaimahussaini
  */
-public abstract class CallableNode extends Node {
+public abstract class CallableNode extends StatementNode {
 	
 	/**
 	 * Name of function.

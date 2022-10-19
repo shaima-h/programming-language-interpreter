@@ -263,6 +263,14 @@ public class Lexer {
 					}
 					state = '5';
 				}
+				else if(chr == ',') {
+					if(store != "") {
+						tokens.add(new Token(Token.Type.NUMBER, store));
+		                store = "";
+					}
+					tokens.add(new Token(Token.Type.COMMA));
+					state = '1';
+				}
 				else if(chr == ')') {
 					if (stack.isEmpty() || stack.pop() != chr) {
 						throw new Exception("Invalid input parentheses.");

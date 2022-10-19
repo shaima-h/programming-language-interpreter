@@ -1,15 +1,14 @@
-(* Iterative *)
-define add (x,y:integer; var  sum: integer)
+define start()
 variables
-	counter : integer
+	sqrt : real
+	rand : integer
+	num : real
 begin
-	counter := y
-	sum := x
-	for counter from 3*(2+10) to 50
-	begin
-		counter := counter - 1
-		sum := sum + 1
-	end
+
+	squareRoot 16.0, var sqrt
+	getRandom var rand
+	integerToReal rand, var num
+	write sqrt
 	
-	add 4, 3, var sum 
+	
 end

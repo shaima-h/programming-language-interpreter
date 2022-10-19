@@ -6,6 +6,12 @@ import java.util.List;
  */
 public class Read extends BuiltInFunctionNode {
 	
+	public Read(String name, List<VariableNode> parameters, boolean variadic) {
+		super(name, parameters, variadic);
+		
+		// TODO Auto-generated constructor stub
+	}
+
 	boolean variadic = true;
 	
 	//var a, var b, var c...
@@ -15,8 +21,8 @@ public class Read extends BuiltInFunctionNode {
 		if(list.size() == 0) {
 			throw new Exception("Invalid function call to read.");
 		}
-		
-		for(int i = 0; i < list.size(); i++) {
+				
+		for(int i = 0; i < list.size(); i++) {			
 			String str = list.get(i).toString();
 			InterpreterDataType curr = list.get(i);
 			

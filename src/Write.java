@@ -7,6 +7,11 @@ import java.util.List;
  */
 public class Write extends BuiltInFunctionNode {
 
+	public Write(String name, List<VariableNode> parameters, boolean variadic) {
+		super(name, parameters, variadic);
+		// TODO Auto-generated constructor stub
+	}
+
 	boolean variadic = true;
 	
 	public void execute(List<InterpreterDataType> list) throws Exception {

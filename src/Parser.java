@@ -139,7 +139,7 @@ public class Parser {
 	 * @return Node representing mathematical factor.
 	 */
 	public Node factor() {
-//		System.out.println("called factor");
+//		System.out.println("*******called factor");
 
 		Token matchedNum = matchAndRemove(Token.Type.NUMBER);
 		Node node;
@@ -239,6 +239,7 @@ public class Parser {
 			}	
 			
 			List<StatementNode> statements = new ArrayList<>();
+//			System.out.println("*****called bodyfunction for " + name);
 			statements = bodyFunction();
 			
 			function = new FunctionNode(name, parameters, localVars, statements);
@@ -436,7 +437,8 @@ public class Parser {
 		List<StatementNode> statements = statements();
 		
 		removeEndOfLines();
-				
+		
+//		System.out.println("===" + tokens);
 		if(matchAndRemove(Token.Type.END) == null) {
 			throw new Exception("Missing end in body of function.");
 		}
@@ -472,7 +474,13 @@ public class Parser {
 	 * @throws Exception
 	 */
 	public StatementNode statement() throws Exception {
-		StatementNode statement = assignment();
+		StatementNode statement;
+		
+		statement = assignment();
+		if(statement != null)
+			return statement;
+		
+		statement = functionDefinition();
 		if(statement != null)
 			return statement;
 		
@@ -515,6 +523,11 @@ public class Parser {
 	 * @throws Exception
 	 */
 	public AssignmentNode assignment() throws Exception {
+		
+		removeEndOfLines();
+		
+//		System.out.println("called assignment");
+		
 		if(peek(Token.Type.ASSIGNMENT)) {
 			Token id = matchAndRemove(Token.Type.IDENTIFIER);
 			if(id == null)
@@ -527,7 +540,7 @@ public class Parser {
 			if(expression == null)
 				throw new Exception("Invalid assignment.");
 			
-			matchAndRemove(Token.Type.EndOfLine);
+			removeEndOfLines();
 			
 			VariableReferenceNode var = new VariableReferenceNode(id.getValueStr());
 			
@@ -537,7 +550,7 @@ public class Parser {
 			return new AssignmentNode(var, expression);
 			
 		}
-		
+
 //		System.out.println("returned null assignment");
 		return null;
 	}
@@ -736,12 +749,17 @@ public class Parser {
 	 */
 	public FunctionCallNode functionCall() throws Exception {
 		
+//		System.out.println("called functionCall()");
+//		System.out.println(tokens);
+
 		Token id = matchAndRemove(Token.Type.IDENTIFIER);
-		List<Node> parameters = new ArrayList<>();
+		List<ParameterNode> parameters = new ArrayList<>();
+//		System.out.println(id);
 		
 		if(id != null) {
 			do {
 				Node value = expression();
+//				System.out.println("value: " + value);
 
 				if(matchAndRemove(Token.Type.VAR) != null) { //var
 					VariableReferenceNode var = 

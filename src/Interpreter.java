@@ -8,21 +8,23 @@ import java.util.List;
  */
 public class Interpreter {
 	
-	
+	/**
+	 * Represents all callable functions.
+	 */
 	static HashMap<String, CallableNode> functions = new HashMap<String, CallableNode>();
 	
-	public Interpreter() {
-		functions.put("read", new Read());
-		functions.put("write", new Write());
-		functions.put("squareRoot", new SquareRoot());
-		functions.put("getRandom", new GetRandom());
-		functions.put("integerToReal", new IntegerToReal());
-		functions.put("realToInteger", new RealToInteger());
-	}
+//	public Interpreter() {		
+//		functions.put("read", new Read());
+//		functions.put("write", new Write());
+//		functions.put("squareRoot", new SquareRoot());
+//		functions.put("getRandom", new GetRandom());
+//		functions.put("integerToReal", new IntegerToReal());
+//		functions.put("realToInteger", new RealToInteger());
+//	}
 	
-	public void addFunction(String string, CallableNode function) {
-		functions.put(string, function);
-	}
+//	public void addFunction(String string, CallableNode function) {
+//		functions.put(string, function);
+//	}
 	
 	
 	/**
@@ -69,30 +71,49 @@ public class Interpreter {
 		
 	}
 	
-	
+	/**
+	 * Takes a function node and list of function call parameters and interprets the function.
+	 * @param function Function to be interpreted.
+	 * @param parameters Function call parameters.
+	 * @throws Exception
+	 */
 	public static void interpretFunction(FunctionNode function, List<InterpreterDataType> parameters) throws Exception {
 		
 		HashMap<String, InterpreterDataType> variables = new HashMap<String, InterpreterDataType>();
 		
-		for(int i = 0; i < function.parameters.size(); i++) {
+		//PARAMETERS
+		for(int i = 0; i < parameters.size(); i++) {
 			if(function.parameters.get(i).type == VariableNode.Type.REAL) {
-				variables.put(function.parameters.get(i).name,
-					new FloatDataType(((FloatNode) (function.parameters.get(i).value)).number));
+				if(parameters.get(i) instanceof FloatDataType) {
+					variables.put(function.parameters.get(i).name,
+							new FloatDataType(((FloatDataType) parameters.get(i)).value));
+					System.out.println("adding: " + ((FloatDataType) parameters.get(i)).value);
+				} else {
+					throw new Exception("Error in parameters in function call.");
+				}
+				
 			}
 			else if(function.parameters.get(i).type == VariableNode.Type.INTEGER) {
-				variables.put(function.parameters.get(i).name,
-					new IntDataType(((IntegerNode) (function.parameters.get(i).value)).number));
+				if(parameters.get(i) instanceof IntDataType) {
+					variables.put(function.parameters.get(i).name,
+							new IntDataType(((IntDataType) parameters.get(i)).value));
+				} else {
+					throw new Exception("Error in parameters in function call.");
+				}
 			}
 		}
 		
-		for(int i = 0; i < function.localVars.size(); i++) { //value = initial value or 0 if no value was set
-			if(function.localVars.get(i).type == VariableNode.Type.REAL) {
-				variables.put(function.localVars.get(i).name,
-					new FloatDataType(((FloatNode) (function.localVars.get(i).value)).number));
-			}
-			else if(function.localVars.get(i).type == VariableNode.Type.INTEGER) {
-				variables.put(function.localVars.get(i).name,
-					new IntDataType(((IntegerNode) (function.localVars.get(i).value)).number));
+		//LOCAL VARS
+		if(function.localVars != null) {
+			for(int i = 0; i < function.localVars.size(); i++) { //value = initial value or 0 if no value was set
+				if(function.localVars.get(i).type == VariableNode.Type.REAL) {
+					variables.put(function.localVars.get(i).name,
+						new FloatDataType(((FloatNode) (function.localVars.get(i).value)).number));
+				}
+				else if(function.localVars.get(i).type == VariableNode.Type.INTEGER) {
+					variables.put(function.localVars.get(i).name,
+						new IntDataType(((IntegerNode) (function.localVars.get(i).value)).number));
+				}
 			}
 		}
 		
@@ -100,79 +121,141 @@ public class Interpreter {
 		
 	}
 	
-	//static?
+	/**
+	 * Takes a list of the function's statements and the variables of the program and executes the function.
+	 * @param statements Function's statements.
+	 * @param variables Current working variables.
+	 * @throws Exception
+	 */
 	public static void interpretBlock(List<StatementNode> statements, HashMap<String, InterpreterDataType> variables) throws Exception {
-		
-		boolean variadic = false;
-		
+				
+		//looping through all statements
 		for(int i = 0; i < statements.size(); i++) {
+			boolean variadic = false; //if function is variadic
+			
 			if(statements.get(i) instanceof FunctionCallNode) {
-				CallableNode functionDef = 
-					functions.get(((FunctionCallNode) statements.get(i)).name);
-				if(functionDef instanceof BuiltInFunctionNode && 
-					!((BuiltInFunctionNode) functionDef).variadic || 
+				FunctionCallNode functionCall = (FunctionCallNode) statements.get(i);
+				
+//				System.out.println("name: " + functionCall.name);
+
+				CallableNode functionDef = functions.get(functionCall.name); //function definition
+				
+//				System.out.println("def:" + functionDef.parameters);
+//				System.out.println(((BuiltInFunctionNode) functionDef).variadic);
+				
+				//checking if number of parameters matches
+				if((functionDef instanceof BuiltInFunctionNode && 
+					!((BuiltInFunctionNode) functionDef).variadic) || 
 					!(functionDef instanceof BuiltInFunctionNode)) {
 					
-					if(functionDef.parameters.size() != variables.size()) { //??? variables size??? doesnt variables include local vars and not just parameters
-						throw new Exception("Invalid number of parameters");
+					if(functionCall.parameters.size() != functionDef.parameters.size()) {
+						throw new Exception("Invalid function call to " + functionCall.name);
 					}
 				}
 				else {
-					variadic = true;
+					variadic = true; //variadic function (read or write)
 				}
 				
 				List<InterpreterDataType> values = new ArrayList<>();
 				
-				for(int j = 0; j < ((FunctionCallNode) statements).parameters.size(); j++) {
+				//checking all parameters of functionCall
+				for(int j = 0; j < functionCall.parameters.size(); j++) {
 					
-					if(((FunctionCallNode) statements).parameters.get(j) instanceof VariableReferenceNode) { //var
-						
-						if(variables.get(((VariableReferenceNode) (((FunctionCallNode) statements).parameters.get(j))).name) instanceof IntDataType) {
-							values.add(new IntDataType(((IntDataType) variables.get(((VariableReferenceNode) (((FunctionCallNode) statements).parameters.get(j))).name)).value));
+//					System.out.println(functionCall.parameters.get(j));
+					
+					if(functionCall.parameters.get(j).var) { //var
+						if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof IntDataType) {
+							values.add(new IntDataType(((IntDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).value));
 						}
 						else { //FloatDataType
-							values.add(new FloatDataType(((FloatDataType) variables.get(((VariableReferenceNode) (((FunctionCallNode) statements).parameters.get(j))).name)).value));
+							values.add(new FloatDataType(((FloatDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).value));
 						}
+												
 					}
-					else { //constant
-						if(((FunctionCallNode) statements).parameters.get(j) instanceof IntegerNode) {
+					else { //constant, not var
+						if((functionCall).parameters.get(j).parameter instanceof IntegerNode) {
 							values.add(new IntDataType(
-								((IntegerNode) ((FunctionCallNode) statements).parameters.get(j)).number));
+								((IntegerNode) (functionCall).parameters.get(j).parameter).number));
 						}
-						else if(((FunctionCallNode) statements).parameters.get(j) instanceof FloatNode) {
+						else if((functionCall).parameters.get(j).parameter instanceof FloatNode) {
 							values.add(new FloatDataType(
-									((FloatNode) ((FunctionCallNode) statements).parameters.get(j)).number));
+									((FloatNode) (functionCall).parameters.get(j).parameter).number));
+						}
+						else if((functionCall).parameters.get(j).parameter instanceof VariableReferenceNode) {
+							if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof IntDataType) {
+								values.add(new IntDataType(((IntDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).value));
 							}
-					}
-					
-				}
-				
-				if(functionDef instanceof BuiltInFunctionNode) {
-					((BuiltInFunctionNode) functions.get(functionDef.name)).execute(values);
-				}
-				else {
-					// interpret function????
-				}
-				
-				for(int j = 0; j < values.size(); j++) {
-					if(variadic || (/*called function is marked as VAR and  the invocation is marked as VAR*/)) {
-						if(values.get(j) instanceof FloatDataType) {
-							variables.put(null, null);
-							//Update the working variable value with the values “passed back” from the function
+							else { //FloatDataType
+								values.add(new FloatDataType(((FloatDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).value));
+							}
 						}
 					}
 					
-					
 				}
 				
+				System.out.println();
+				System.out.println("Function called: " + functionCall.name);
+				System.out.println("Values before function call: " + values);
 				
+//				System.out.println(functions);
+//				System.out.println("def: " + functionDef);
+//				System.out.println("statements: " + statements);
 				
+				//calling execute for built-in function
+				if(functionDef instanceof BuiltInFunctionNode builtin) {
+//					((BuiltInFunctionNode) functions.get(functionDef.name)).execute(values);
+//					System.out.println("***");
+//					System.out.println(values);
+//					System.out.println(functionDef);
+					
+					builtin.execute(values);
+					
+//					System.out.println(values);
+				}
+				else { //calling interpreter for user defined function
+					interpretFunction((FunctionNode) functions.get(functionDef.name), values);
+//					System.out.println(variables);
+				}
 				
+//				System.out.println(functionDef);
+				
+				//changing var values
+				for(int j = 0; j < values.size(); j++) {
+					/* || called function is marked as VAR and  the invocation is marked as VAR*/
+//					System.out.println(values + " * " + functionDef.parameters + " * " + functionCall.parameters);
+					if(variadic || (!functionDef.parameters.get(j).constant && functionCall.parameters.get(j).var)) {
+//						System.out.println(variables);
+						if(variadic) {
+//							if ((!functionDef.parameters.get(j).constant ^ functionCall.parameters.get(j).var)) {
+//								throw new Exception("Parameter of function call to " + functionCall.name + " must be var.");
+//							}
+							if(functionCall.parameters.get(j).parameter instanceof VariableReferenceNode) {
+								variables.replace(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name, values.get(j));
+							}
+//							else if(functionCall.parameters.get(j).parameter instanceof FloatNode) {
+//								variables.replace(((FloatNode)(functionCall).parameters.get(j).parameter).name, values.get(j));
+//							}
+//							else if(functionCall.parameters.get(j).parameter instanceof IntegerNode) {
+//								variables.replace(((IntegerNode)(functionCall).parameters.get(j).parameter).name, values.get(j));
+//							}
+						}
+						else {
+							variables.replace(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name, values.get(j));
+						}
+							//Update the working variable value with the values “passed back” from the function
+					}
+					else if ((!functionDef.parameters.get(j).constant ^ functionCall.parameters.get(j).var)) {
+						throw new Exception("Parameter of function call to " + functionCall.name + " must be var.");
+					}
+//					
+				}			
+				
+				System.out.println("Values after function call: " + values);				
 				
 				
 			}
 			else {
-				break;
+				continue;
 			}
 		}
 		

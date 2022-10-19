@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -6,6 +7,13 @@ import java.util.Random;
  * @author shaimahussaini
  */
 public class GetRandom extends BuiltInFunctionNode {
+
+	public GetRandom(String name, boolean variadic) {
+		super(name, variadic);
+		List<VariableNode> parameters = new ArrayList<>();
+		parameters.add(new VariableNode(null, VariableNode.Type.INTEGER, false, new IntegerNode(0)));
+		this.parameters = parameters;
+	}
 
 	public void execute(List<InterpreterDataType> list) throws Exception {
 		

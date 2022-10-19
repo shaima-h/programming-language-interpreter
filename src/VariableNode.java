@@ -12,6 +12,7 @@ public class VariableNode extends Node {
 	
 	/**
 	 * Represents if variable is a constant or not.
+	 * For parameters in function definition: represents if var (false) or not (true).
 	 */
 	boolean constant;
 	

@@ -1,9 +1,18 @@
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Converts a real number into an integer.
  */
 public class RealToInteger extends BuiltInFunctionNode {
+
+	public RealToInteger(String name, boolean variadic) {
+		super(name, variadic);
+		List<VariableNode> parameters = new ArrayList<>();
+		parameters.add(new VariableNode(null, VariableNode.Type.REAL, true, new FloatNode(0)));
+		parameters.add(new VariableNode(null, VariableNode.Type.INTEGER, false, new IntegerNode(0)));
+		this.parameters = parameters;
+	}
 
 	//real, var int
 	public void execute(List<InterpreterDataType> list) throws Exception {
