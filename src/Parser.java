@@ -59,6 +59,24 @@ public class Parser {
 		else if(matchAndRemove(Token.Type.MINUS) != null) {
 			operator = MathOpNode.Operator.MINUS;
 		}
+		else if(matchAndRemove(Token.Type.GREATER_THAN) != null) {
+			operator = MathOpNode.Operator.GREATER_THAN;
+		}
+		else if(matchAndRemove(Token.Type.GREATER_EQUAL) != null) {
+			operator = MathOpNode.Operator.GREATER_EQUAL;
+		}
+		else if(matchAndRemove(Token.Type.LESS_THAN) != null) {
+			operator = MathOpNode.Operator.LESS_THAN;
+		}
+		else if(matchAndRemove(Token.Type.LESS_EQUAL) != null) {
+			operator = MathOpNode.Operator.LESS_EQUAL;
+		}
+		else if(matchAndRemove(Token.Type.NOT_EQUALS) != null) {
+			operator = MathOpNode.Operator.NOT_EQUALS;
+		}
+		else if(matchAndRemove(Token.Type.EQUALS) != null) {
+			operator = MathOpNode.Operator.EQUALS;
+		}
 		else {
 			return left;
 		}
@@ -67,6 +85,33 @@ public class Parser {
 		
 		node = new MathOpNode(operator, left, right);
 		
+		System.out.println("node: " + node);
+
+		if(matchAndRemove(Token.Type.GREATER_THAN) != null) {
+			operator = MathOpNode.Operator.GREATER_THAN;
+			node = new MathOpNode(operator, node, term());
+		}
+		else if(matchAndRemove(Token.Type.GREATER_EQUAL) != null) {
+			operator = MathOpNode.Operator.GREATER_EQUAL;
+			node = new MathOpNode(operator, node, term());
+		}
+		else if(matchAndRemove(Token.Type.LESS_THAN) != null) {
+			operator = MathOpNode.Operator.LESS_THAN;
+			node = new MathOpNode(operator, node, term());
+		}
+		else if(matchAndRemove(Token.Type.LESS_EQUAL) != null) {
+			operator = MathOpNode.Operator.LESS_EQUAL;
+			node = new MathOpNode(operator, node, term());
+		}
+		else if(matchAndRemove(Token.Type.NOT_EQUALS) != null) {
+			operator = MathOpNode.Operator.NOT_EQUALS;
+			node = new MathOpNode(operator, node, term());
+		}
+		else if(matchAndRemove(Token.Type.EQUALS) != null) {
+			operator = MathOpNode.Operator.EQUALS;
+			node = new MathOpNode(operator, node, term());
+		}
+				
 		//checks for multiple operators (ex: 1+2+3)
 		while(tokens.size() > 0 && matchAndRemove(Token.Type.EndOfLine) == null) {
 			if(matchAndRemove(Token.Type.PLUS) != null) {
@@ -148,6 +193,24 @@ public class Parser {
 			Token id = matchAndRemove(Token.Type.IDENTIFIER);
 			if(id != null) {
 				return new VariableReferenceNode(id.getValueStr());
+			}
+			
+			if(matchAndRemove(Token.Type.TRUE) != null) {
+				return new BoolNode(true);
+			}
+			
+			if(matchAndRemove(Token.Type.FALSE) != null) {
+				return new BoolNode(false);
+			}
+			
+			Token str = matchAndRemove(Token.Type.STRINGCONTENTS);
+			if(str != null) {
+				return new StringNode(str.value);
+			}
+			
+			Token chr = matchAndRemove(Token.Type.CHARCONTENTS);
+			if(chr != null) {
+				return new CharNode(chr.value.charAt(0));
 			}
 				
 			//calls expression for the expression inside parentheses
@@ -300,7 +363,7 @@ public class Parser {
 		
 		if(id != null) {
 			if(matchAndRemove(Token.Type.EQUALS) == null)
-				throw new Exception("Invalid variable declaration.");
+				throw new Exception("Invalid constant declaration.");
 			
 			Token matchedNum = matchAndRemove(Token.Type.NUMBER);
 			Node val = null;
@@ -313,6 +376,18 @@ public class Parser {
 			else if (matchedNum.getNumType() == 'f') {
 				val = new FloatNode((float)matchedNum.getValue());
 				type = VariableNode.Type.REAL;
+			}
+			else if(matchAndRemove(Token.Type.BOOLEAN) != null) {
+				val = new BoolNode(false);
+				type = VariableNode.Type.BOOLEAN;
+			}
+			else if(matchAndRemove(Token.Type.STRING) != null) {
+				val = new StringNode("");
+				type = VariableNode.Type.STRING;
+			}
+			else if(matchAndRemove(Token.Type.CHARACTER) != null) {
+				val = new CharNode('\0');
+				type = VariableNode.Type.CHARACTER;
 			}
 			
 			VariableNode constant = new VariableNode(id.getValueStr(), type, true, val);
@@ -372,6 +447,7 @@ public class Parser {
 		
 		removeEndOfLines();
 		
+		//true = not var, false = var
 		boolean constant = true;
 		if(matchAndRemove(Token.Type.VAR) != null) //use constant value in VariableNode for parameters to show if var or not
 			constant = false;
@@ -381,17 +457,19 @@ public class Parser {
 		ids.add(id);
 		
 		if(id != null) {
-			
+
 			while(matchAndRemove(Token.Type.COMMA) != null) {
 				Token identifier = matchAndRemove(Token.Type.IDENTIFIER);
 				ids.add(new Token(Token.Type.IDENTIFIER, identifier.getValueStr()));
 			}
 			
-			if(matchAndRemove(Token.Type.COLON) == null)
+			if(matchAndRemove(Token.Type.COLON) == null) {
 				throw new Exception("Invalid variable declaration.");
+			}
 			
 			Token typeI = matchAndRemove(Token.Type.INTEGER);
 			Token typeR = matchAndRemove(Token.Type.REAL);
+
 			Node val = null;
 			VariableNode.Type type = null;
 			
@@ -402,6 +480,18 @@ public class Parser {
 			else if(typeR != null) {
 				val = new FloatNode(0);
 				type = VariableNode.Type.REAL;
+			}
+			else if(matchAndRemove(Token.Type.BOOLEAN) != null) {
+				val = new BoolNode(false);
+				type = VariableNode.Type.BOOLEAN;
+			}
+			else if(matchAndRemove(Token.Type.STRING) != null) {
+				val = new StringNode("");
+				type = VariableNode.Type.STRING;
+			}
+			else if(matchAndRemove(Token.Type.CHARACTER) != null) {
+				val = new CharNode('\0');
+				type = VariableNode.Type.CHARACTER;
 			}
 			
 			for(int i = 0; i < ids.size(); i++) {
@@ -431,6 +521,8 @@ public class Parser {
 	public List<StatementNode> bodyFunction() throws Exception {
 		
 		removeEndOfLines();
+		
+		System.out.println(tokens);
 		
 		if(matchAndRemove(Token.Type.BEGIN) == null) {
 			throw new Exception("Missing begin in body of function.");
@@ -565,37 +657,39 @@ public class Parser {
 	 * @return BooleanExpression.
 	 * @throws Exception
 	 */
-	public BooleanExpressionNode booleanExpression() throws Exception {
-		Node left = expression();
-		
-		Token.Type condition = null;
-		
-		if(matchAndRemove(Token.Type.GREATER_THAN) != null) {
-			condition = Token.Type.GREATER_THAN;
-		}
-		else if(matchAndRemove(Token.Type.GREATER_EQUAL) != null) {
-			condition = Token.Type.GREATER_EQUAL;
-		}
-		else if(matchAndRemove(Token.Type.LESS_THAN) != null) {
-			condition = Token.Type.LESS_THAN;
-		}
-		else if(matchAndRemove(Token.Type.LESS_EQUAL) != null) {
-			condition = Token.Type.LESS_EQUAL;
-		}
-		else if(matchAndRemove(Token.Type.NOT_EQUALS) != null) {
-			condition = Token.Type.NOT_EQUALS;
-		}
-		else if(matchAndRemove(Token.Type.EQUALS) != null) {
-			condition = Token.Type.EQUALS;
-		}
-		else {
-			throw new Exception("Invalid boolean expression.");
-		}
-		
-		Node right = expression();
-		
-		return new BooleanExpressionNode(left, condition, right);
-	}
+//	public BooleanExpressionNode booleanExpression() throws Exception {
+//		Node left = expression();
+//		
+//		Token.Type condition = null;
+//		
+//		if(matchAndRemove(Token.Type.GREATER_THAN) != null) {
+//			condition = Token.Type.GREATER_THAN;
+//		}
+//		else if(matchAndRemove(Token.Type.GREATER_EQUAL) != null) {
+//			condition = Token.Type.GREATER_EQUAL;
+//		}
+//		else if(matchAndRemove(Token.Type.LESS_THAN) != null) {
+//			condition = Token.Type.LESS_THAN;
+//		}
+//		else if(matchAndRemove(Token.Type.LESS_EQUAL) != null) {
+//			condition = Token.Type.LESS_EQUAL;
+//		}
+//		else if(matchAndRemove(Token.Type.NOT_EQUALS) != null) {
+//			condition = Token.Type.NOT_EQUALS;
+//		}
+//		else if(matchAndRemove(Token.Type.EQUALS) != null) {
+//			condition = Token.Type.EQUALS;
+//		}
+////		else {
+////			throw new Exception("Invalid boolean expression.");
+////		}
+//		
+//		Node right = expression();
+//		
+//		return null;
+//		
+////		return new BooleanExpressionNode(left, condition, right);
+//	}
 	
 	
 //	While (booleanExpression and collection of statementNodes)
@@ -610,14 +704,30 @@ public class Parser {
 		
 		if(matchAndRemove(Token.Type.WHILE) == null) return null;
 		
-		BooleanExpressionNode booleanExp = booleanExpression();
+		BooleanExpressionNode booleanExpNode;
+		Node booleanExp = expression();
+		
 		if(booleanExp == null)
 			throw new Exception("Invalid while block.");
+		if(booleanExp instanceof MathOpNode) {
+			booleanExpNode = new BooleanExpressionNode(((MathOpNode) booleanExp).left, ((MathOpNode) booleanExp).operator, ((MathOpNode) booleanExp).right);
+		}
+		else if(booleanExp instanceof VariableReferenceNode) {
+			booleanExpNode = new BooleanExpressionNode(((VariableReferenceNode) booleanExp), null, null);
+		}
+		else if(booleanExp instanceof BoolNode) {
+			booleanExpNode = new BooleanExpressionNode(((BoolNode) booleanExp), null, null);
+		}
+		else {
+			throw new Exception("Invalid while block.");
+		}
+		
+		System.out.println(booleanExpNode);
 		
 		List<StatementNode> statements = bodyFunction();
 		
 //		System.out.println("returned null whileFunction");
-		return new WhileNode(booleanExp, statements);
+		return new WhileNode(booleanExpNode, statements);
 		
 	}
 	
@@ -638,11 +748,25 @@ public class Parser {
 		if(matchAndRemove(Token.Type.UNTIL) == null)
 			throw new Exception("Invalid repeat block.");
 		
-		BooleanExpressionNode booleanExp = booleanExpression();
-		if(booleanExp == null)
-			throw new Exception("Invalid while block.");
+		BooleanExpressionNode booleanExpNode;
+		Node booleanExp = expression();
 		
-		return new RepeatNode(booleanExp, statements);
+		if(booleanExp == null)
+			throw new Exception("Invalid repeat block.");
+		if(booleanExp instanceof MathOpNode) {
+			booleanExpNode = new BooleanExpressionNode(((MathOpNode) booleanExp).left, ((MathOpNode) booleanExp).operator, ((MathOpNode) booleanExp).right);
+		}
+		else if(booleanExp instanceof VariableReferenceNode) {
+			booleanExpNode = new BooleanExpressionNode(((VariableReferenceNode) booleanExp), null, null);
+		}
+		else if(booleanExp instanceof BoolNode) {
+			booleanExpNode = new BooleanExpressionNode(((BoolNode) booleanExp), null, null);
+		}
+		else {
+			throw new Exception("Invalid repeat block.");
+		}
+		
+		return new RepeatNode(booleanExpNode, statements);
 	}
 	
 	
@@ -698,31 +822,61 @@ public class Parser {
 		
 		if(matchAndRemove(Token.Type.IF) == null) return null;
 		
-		BooleanExpressionNode booleanExp = booleanExpression();
+		BooleanExpressionNode booleanExpNode;
+		Node booleanExp = expression();
+		
 		if(booleanExp == null)
 			throw new Exception("Invalid if block.");
+		if(booleanExp instanceof MathOpNode) {
+			booleanExpNode = new BooleanExpressionNode(((MathOpNode) booleanExp).left, ((MathOpNode) booleanExp).operator, ((MathOpNode) booleanExp).right);
+		}
+		else if(booleanExp instanceof VariableReferenceNode) {
+			booleanExpNode = new BooleanExpressionNode(((VariableReferenceNode) booleanExp), null, null);
+		}
+		else if(booleanExp instanceof BoolNode) {
+			booleanExpNode = new BooleanExpressionNode(((BoolNode) booleanExp), null, null);
+		}
+		else {
+			throw new Exception("Invalid if block.");
+		}
+		
+		System.out.println(booleanExpNode);
 		
 		if(matchAndRemove(Token.Type.THEN) == null)
 			throw new Exception("Invalid if block.");
 		
 		List<StatementNode> statements = bodyFunction();
 		
-		IfNode ifNode = new IfNode(booleanExp, statements, null);
+		IfNode ifNode = new IfNode(booleanExpNode, statements, null);
 		IfNode tail = ifNode;
 		
 		IfNode elsif;
 		removeEndOfLines();
 		while(matchAndRemove(Token.Type.ELSIF) != null) {
-			BooleanExpressionNode booleanExp_elsif = booleanExpression();
-			if(booleanExp == null)
-				throw new Exception("Invalid elsif block.");
+			BooleanExpressionNode booleanExpNode_elsif;
+			Node booleanExp_elsif = expression();
+			
+			if(booleanExp_elsif == null)
+				throw new Exception("Invalid while block.");
+			if(booleanExp_elsif instanceof MathOpNode) {
+				booleanExpNode_elsif = new BooleanExpressionNode(((MathOpNode) booleanExp).left, ((MathOpNode) booleanExp).operator, ((MathOpNode) booleanExp).right);
+			}
+			else if(booleanExp_elsif instanceof VariableReferenceNode) {
+				booleanExpNode_elsif = new BooleanExpressionNode(((VariableReferenceNode) booleanExp), null, null);
+			}
+			else if(booleanExp_elsif instanceof BoolNode) {
+				booleanExpNode_elsif = new BooleanExpressionNode(((BoolNode) booleanExp), null, null);
+			}
+			else {
+				throw new Exception("Invalid while block.");
+			}
 			
 			if(matchAndRemove(Token.Type.THEN) == null)
 				throw new Exception("Invalid if block.");
 			
 			List<StatementNode> statements_elsif = bodyFunction();
 			
-			elsif = new IfNode(booleanExp_elsif, statements_elsif, null);
+			elsif = new IfNode(booleanExpNode_elsif, statements_elsif, null);
 			
 			if(ifNode.getNext() == null) {
 				ifNode.setNext(elsif);

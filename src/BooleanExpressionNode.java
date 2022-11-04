@@ -13,7 +13,7 @@ public class BooleanExpressionNode extends Node {
 	/**
 	 * Condition.
 	 */
-	Token.Type condition;
+	MathOpNode.Operator condition;
 	
 	/**
 	 * Right side of expression.
@@ -26,7 +26,7 @@ public class BooleanExpressionNode extends Node {
 	 * @param condition Condition.
 	 * @param right Right side of expression.
 	 */
-	public BooleanExpressionNode(Node left, Token.Type condition, Node right) {
+	public BooleanExpressionNode(Node left, MathOpNode.Operator condition, Node right) {
 		this.left = left;
 		this.condition = condition;
 		this.right = right;

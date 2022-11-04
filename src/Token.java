@@ -16,19 +16,20 @@ public class Token {
 		VARIABLES, CONSTANTS, ASSIGNMENT, IF, THEN, ELSE, 
 		ELSIF, FOR, FROM, TO, WHILE, REPEAT, UNTIL, MODULO, 
 		GREATER_THAN, LESS_THAN, GREATER_EQUAL, LESS_EQUAL, 
-		NOT_EQUALS, VAR;
+		NOT_EQUALS, VAR, TRUE, FALSE, BOOLEAN, STRING, 
+		CHARACTER, CHARCONTENTS, STRINGCONTENTS;
 		
 	}
 	
 	/**
 	 * Type of token.
 	 */
-	private Type type;
+	Type type;
 	
 	/**
 	 * Value of token.
 	 */
-	private String value = null;
+	String value = null;
 
 	/**
 	 * Constructor.
@@ -93,10 +94,17 @@ public class Token {
 	 * Returns token as a string.
 	 */
 	public String toString() {
-		if(type == Type.NUMBER)
+		if(type == Type.NUMBER) {
 			return "NUMBER(" + value + ")";
+		}
 		else if(type == Type.IDENTIFIER) {
 			return "IDENTIFIER(" + value + ")";
+		}
+		else if(type == Type.STRINGCONTENTS) {
+			return "STRINGCONTENTS(" + value + ")";
+		}
+		else if(type == Type.CHARCONTENTS) {
+			return "CHARCONTENTS(" + value + ")";
 		}
 		else
 			return type.toString();

@@ -26,7 +26,7 @@ public class VariableNode extends Node {
 	 * @author shaimahussaini
 	 */
 	public enum Type {
-		INTEGER, REAL;
+		INTEGER, REAL, BOOLEAN, STRING, CHARACTER;
 	}
 	
 	/**

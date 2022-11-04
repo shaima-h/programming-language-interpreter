@@ -7,6 +7,11 @@ import java.util.List;
  */
 public class SquareRoot extends BuiltInFunctionNode {
 
+	/*
+	 * SquareRoot someFloat, var result
+		Result = square root of someFloat
+	 */
+	
 	public SquareRoot(String name, boolean variadic) {
 		super(name, variadic);
 		List<VariableNode> parameters = new ArrayList<>();
@@ -18,7 +23,6 @@ public class SquareRoot extends BuiltInFunctionNode {
 	public void execute(List<InterpreterDataType> list) throws Exception {
 		
 		if(list.size() != 2 || !(list.get(0) instanceof FloatDataType)) {
-			System.out.println(list.size());
 			throw new Exception("Invalid function call to squareRoot.");
 		}
 		

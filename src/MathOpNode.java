@@ -9,7 +9,9 @@ public class MathOpNode extends Node {
 	 * Operator type.
 	 */
 	public enum Operator {
-		PLUS, MINUS, TIMES, DIVIDE, MODULO;
+		PLUS, MINUS, TIMES, DIVIDE, MODULO, 
+		GREATER_THAN, LESS_THAN, GREATER_EQUAL, 
+		LESS_EQUAL, NOT_EQUALS, EQUALS;
 	}
 	
 	/**
@@ -20,12 +22,12 @@ public class MathOpNode extends Node {
 	/**
 	 * Left child.
 	 */
-	private Node left;
+	Node left;
 	
 	/**
 	 * Right child.
 	 */
-	private Node right;
+	Node right;
 	
 	/**
 	 * Constructor
@@ -79,6 +81,18 @@ public class MathOpNode extends Node {
 				return "/";	
 			case MODULO:
 				return "mod";
+			case GREATER_THAN:
+				return ">";
+			case LESS_THAN:
+				return "<";
+			case GREATER_EQUAL:
+				return ">=";
+			case LESS_EQUAL:
+				return ">=";
+			case NOT_EQUALS:
+				return "<>";
+			case EQUALS:
+				return "=";
 			default:
 				return "";
 		}
@@ -90,7 +104,7 @@ public class MathOpNode extends Node {
 	 */
 	public String toString() {
 		return ("MathOpNode(" 
-				+ this.opToString() + ", " + this.left.toString()+ ", " + this.right.toString() + ")");
+				+ this.opToString() + ", " + this.left+ ", " + this.right + ")");
 	}
 	
 }

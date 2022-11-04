@@ -56,6 +56,13 @@ public class Lexer {
 		reserved.put("until", Token.Type.UNTIL);
 		reserved.put("mod", Token.Type.MODULO);
 		reserved.put("var", Token.Type.VAR);
+		reserved.put("true", Token.Type.TRUE);
+		reserved.put("false", Token.Type.FALSE);
+		reserved.put("string", Token.Type.STRING);
+		reserved.put("character", Token.Type.CHARACTER);
+		reserved.put("boolean", Token.Type.BOOLEAN);
+
+
 
 		for(int i = 0; i < str.length(); i++) {
 						
@@ -72,9 +79,12 @@ public class Lexer {
 					store += Character.toString(chr);
 					state = '3';
 				}
-				else if(chr == '+' || chr == '-') {
+				else if((chr == '+' || chr == '-') && Character.isDigit(next_chr)) {
 					store += Character.toString(chr);
 					state = '2';
+				}
+				else if(chr == '+') {
+					tokens.add(new Token(Token.Type.PLUS));
 				}
 				else if(chr == '.') {
 					store += Character.toString(chr);
@@ -166,6 +176,12 @@ public class Lexer {
 					}
 					state = '1';
 				}
+				else if(chr == '"') {
+					state = 's';
+				}
+				else if(chr == '\''){
+					state = 'r';
+				}
 				else {
 	                throw new Exception("Invalid input state 1.");
 				}
@@ -179,6 +195,13 @@ public class Lexer {
 					store += Character.toString(chr);
 					state = '6';
 				}
+				if(chr == '\s' || chr == '\t') {
+					state = '1';
+				}
+//				else if(chr == '"' || chr == '\'') {
+//					i--;
+//					state = '1';
+//				}
 				else {
 	                throw new Exception("Invalid input state 2.");
 				}
@@ -406,7 +429,7 @@ public class Lexer {
 					state = 'w';
 				}
 				else if(chr == ',' || chr == ':' || chr == '=' || chr == ';' || chr == '\s' || chr == '\t'
-						|| chr == '(' || chr == ')') {
+						|| chr == '(' || chr == ')' || chr == '"' || chr == '\'') {
 	                if(reserved.containsKey(store)) {
 	                	tokens.add(new Token(reserved.get(store)));
 	                	store = "";
@@ -457,6 +480,12 @@ public class Lexer {
     					}
     					tokens.add(new Token(Token.Type.RPAREN));
     					state = '1';
+                		break;
+                	case '"':
+                		state = 's';
+                		break;
+                	case '\'':
+                		state = 'r';
                 		break;
 	                default:
 	                	if(Character.isDigit(next_chr)) { //function call, ex: add 2, 3
@@ -510,7 +539,7 @@ public class Lexer {
 					throw new Exception("Invalid input state w.");
 				}
 				break;
-			case 'c':
+			case 'c': //comment
 				if(chr == '*' && next_chr == ')') {
 					i++;
 					state = '1';
@@ -519,9 +548,32 @@ public class Lexer {
 					state = 'c';
 				}
 				break;
+			case 's': //string
+				if(chr == '"') {
+					tokens.add(new Token(Token.Type.STRINGCONTENTS, store));
+	                store = "";
+	                state = '1';
+				}
+				else {
+					store += chr;
+				}
+				break;
+			case 'r': //char
+				if(chr == '\'') {
+					tokens.add(new Token(Token.Type.CHARCONTENTS, store));
+	                store = "";
+	                state = '1';
+				}
+				else {
+					store += chr;
+					if(store.length() > 1) {
+						throw new Exception("Invalid char length.");
+					}
+				}
+				break;
 			}
 			
-//			System.out.println(chr);
+//			System.out.println("chr: " + chr);
 //			System.out.println("store: " + store);
 //			System.out.println("state: " + state);
 			
@@ -529,6 +581,10 @@ public class Lexer {
 		
 		if(!stack.isEmpty()) {
 			throw new Exception("Invalid input parentheses.");
+		}
+		
+		if(state == 's' || state == 'r') {
+			throw new Exception("Invalid input string or char.");
 		}
 		
 		if(store != "") {

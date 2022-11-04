@@ -44,16 +44,14 @@ public class Interpreter {
 	    		return (float)(((IntegerNode) root).number);
 	    	else if(root instanceof FloatNode)
 	    		return (float)(((FloatNode) root).number);
-	    	else {
+	    	else if(root instanceof VariableReferenceNode) {
 	    		if(variables.get(((VariableReferenceNode) root).name) instanceof FloatDataType) {
 		    		return (float) ((FloatDataType) (variables.get(((VariableReferenceNode) root).name))).value;
 	    		}
 	    		else {
 		    		return (float) ((IntDataType) (variables.get(((VariableReferenceNode) root).name))).value;
 	    		}
-	    		
 	    	}
-	    	
 	    }
 	 
 	    if(root instanceof MathOpNode) {
@@ -80,6 +78,70 @@ public class Interpreter {
 		
 	}
 	
+	public static String resolveString(Node root, HashMap<String, InterpreterDataType> variables) {
+				
+		//empty
+	    if (root == null)
+	        return "";
+	 
+	    //leaf node
+	    if(root instanceof StringNode) {
+	    		return ((StringNode) root).str;
+	    }
+	    else if(root instanceof CharNode) {
+    		return Character.toString(((CharNode) root).chr);
+	    }
+	    else if(root instanceof VariableReferenceNode) {
+    		if(variables.get(((VariableReferenceNode) root).name) instanceof StringDataType) {
+	    		return ((StringDataType) (variables.get(((VariableReferenceNode) root).name))).str;
+    		}
+    		else if(variables.get(((VariableReferenceNode) root).name) instanceof CharDataType) {
+	    		return Character.toString(((CharDataType) (variables.get(((VariableReferenceNode) root).name))).chr);
+    		}
+    	}
+	    
+	    if(root instanceof MathOpNode) {
+	    	//evaluate left subtree
+		    String leftEval = resolveString(((MathOpNode) root).getLeft(), variables);
+		 
+		    //evaluate right subtree
+		    String rightEval = resolveString(((MathOpNode) root).getRight(), variables);
+		 
+		    //check operator
+		    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.PLUS)
+		        return leftEval + rightEval;
+	    }
+	    
+	    return "";
+	}
+	
+	public static boolean resolveBoolean(Node root, HashMap<String, InterpreterDataType> variables) {
+		
+		if(root instanceof BoolNode) {
+    		return ((BoolNode) root).bool;
+	    }
+	    else if(root instanceof VariableReferenceNode) {
+    		if(variables.get(((VariableReferenceNode) root).name) instanceof BoolDataType) {
+	    		return ((BoolDataType) (variables.get(((VariableReferenceNode) root).name))).bool;
+    		}
+    	}
+		
+//		 if(root instanceof MathOpNode) {
+//		    	//evaluate left subtree
+//			    boolean leftEval = resolveString(((MathOpNode) root).getLeft(), variables);
+//			 
+//			    //evaluate right subtree
+//			    String rightEval = resolveString(((MathOpNode) root).getRight(), variables);
+//			 
+//			    //check operator
+//			    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.PLUS)
+//			        return leftEval + rightEval;
+//		    }
+		
+		return false;
+		
+	}
+	
 	/**
 	 * Takes a function node and list of function call parameters and interprets the function.
 	 * @param function Function to be interpreted.
@@ -96,7 +158,6 @@ public class Interpreter {
 				if(parameters.get(i) instanceof FloatDataType) {
 					variables.put(function.parameters.get(i).name,
 							new FloatDataType(((FloatDataType) parameters.get(i)).value));
-					System.out.println("adding: " + ((FloatDataType) parameters.get(i)).value);
 				} else {
 					throw new Exception("Error in parameters in function call.");
 				}
@@ -106,6 +167,30 @@ public class Interpreter {
 				if(parameters.get(i) instanceof IntDataType) {
 					variables.put(function.parameters.get(i).name,
 							new IntDataType(((IntDataType) parameters.get(i)).value));
+				} else {
+					throw new Exception("Error in parameters in function call.");
+				}
+			}
+			else if(function.parameters.get(i).type == VariableNode.Type.BOOLEAN) {
+				if(parameters.get(i) instanceof BoolDataType) {
+					variables.put(function.parameters.get(i).name,
+							new BoolDataType(((BoolDataType) parameters.get(i)).bool));
+				} else {
+					throw new Exception("Error in parameters in function call.");
+				}
+			}
+			else if(function.parameters.get(i).type == VariableNode.Type.STRING) {
+				if(parameters.get(i) instanceof StringDataType) {
+					variables.put(function.parameters.get(i).name,
+							new StringDataType(((StringDataType) parameters.get(i)).str));
+				} else {
+					throw new Exception("Error in parameters in function call.");
+				}
+			}
+			else if(function.parameters.get(i).type == VariableNode.Type.CHARACTER) {
+				if(parameters.get(i) instanceof CharDataType) {
+					variables.put(function.parameters.get(i).name,
+							new CharDataType(((CharDataType) parameters.get(i)).chr));
 				} else {
 					throw new Exception("Error in parameters in function call.");
 				}
@@ -122,6 +207,18 @@ public class Interpreter {
 				else if(function.localVars.get(i).type == VariableNode.Type.INTEGER) {
 					variables.put(function.localVars.get(i).name,
 						new IntDataType(((IntegerNode) (function.localVars.get(i).value)).number));
+				}
+				else if(function.localVars.get(i).type == VariableNode.Type.BOOLEAN) {
+					variables.put(function.localVars.get(i).name,
+						new BoolDataType(((BoolNode) (function.localVars.get(i).value)).bool));
+				}
+				else if(function.localVars.get(i).type == VariableNode.Type.STRING) {
+					variables.put(function.localVars.get(i).name,
+						new StringDataType(((StringNode) (function.localVars.get(i).value)).str));
+				}
+				else if(function.localVars.get(i).type == VariableNode.Type.CHARACTER) {
+					variables.put(function.localVars.get(i).name,
+						new CharDataType(((CharNode) (function.localVars.get(i).value)).chr));
 				}
 			}
 		}
@@ -180,7 +277,15 @@ public class Interpreter {
 						else if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof FloatDataType) {
 							values.add(new FloatDataType(((FloatDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).value));
 						}
-												
+						else if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof BoolDataType) {
+							values.add(new BoolDataType(((BoolDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).bool));
+						}
+						else if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof StringDataType) {
+							values.add(new StringDataType(((StringDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).str));
+						}
+						else if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof CharDataType) {
+							values.add(new CharDataType(((CharDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).chr));
+						}
 					}
 					else { //constant, not var
 						if((functionCall).parameters.get(j).parameter instanceof IntegerNode) {
@@ -191,12 +296,33 @@ public class Interpreter {
 							values.add(new FloatDataType(
 									((FloatNode) (functionCall).parameters.get(j).parameter).number));
 						}
+						else if((functionCall).parameters.get(j).parameter instanceof BoolNode) {
+							values.add(new BoolDataType(
+									((BoolNode) (functionCall).parameters.get(j).parameter).bool));
+						}
+						else if((functionCall).parameters.get(j).parameter instanceof StringNode) {
+							values.add(new StringDataType(
+									((StringNode) (functionCall).parameters.get(j).parameter).str));
+						}
+						else if((functionCall).parameters.get(j).parameter instanceof CharNode) {
+							values.add(new CharDataType(
+									((CharNode) (functionCall).parameters.get(j).parameter).chr));
+						}
 						else if((functionCall).parameters.get(j).parameter instanceof VariableReferenceNode) {
 							if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof IntDataType) {
 								values.add(new IntDataType(((IntDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).value));
 							}
-							else { //FloatDataType
+							else if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof FloatDataType) {
 								values.add(new FloatDataType(((FloatDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).value));
+							}
+							else if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof BoolDataType) {
+								values.add(new BoolDataType(((BoolDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).bool));
+							}
+							else if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof StringDataType) {
+								values.add(new StringDataType(((StringDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).str));
+							}
+							else if(variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name) instanceof CharDataType) {
+								values.add(new CharDataType(((CharDataType) variables.get(((VariableReferenceNode)(functionCall).parameters.get(j).parameter).name)).chr));
 							}
 						}
 					}
@@ -278,13 +404,28 @@ public class Interpreter {
 					int result = (int) resolve(assignment.expression, variables);
 					variables.replace(assignment.target.name, new IntDataType(result));
 				}
+				else if(variables.get(assignment.target.name) instanceof BoolDataType) {
+					boolean result = resolveBoolean(assignment.expression, variables);
+					variables.replace(assignment.target.name, new BoolDataType(result));
+				}
+				else if(variables.get(assignment.target.name) instanceof CharDataType 
+						&& assignment.expression instanceof CharNode) {
+					char result = ((CharNode) assignment.expression).chr;
+					variables.replace(assignment.target.name, new CharDataType(result));
+				}
+				else if(variables.get(assignment.target.name) instanceof StringDataType 
+						|| variables.get(assignment.target.name) instanceof CharDataType) {
+					String result = resolveString(assignment.expression, variables);
+					variables.replace(assignment.target.name, new StringDataType(result));
+				}
 				
 				System.out.println("After assignment:" + variables);
+				System.out.println();
 				
 			}
 			else if(statements.get(i) instanceof WhileNode) {
 				WhileNode whileNode = (WhileNode) statements.get(i);
-				boolean condition = evaluateBooleanExpression(whileNode.expression, variables);
+				boolean condition = evaluateBooleanExpression((BooleanExpressionNode) whileNode.expression, variables);
 				
 				while(condition) {
 					interpretBlock(whileNode.statements, variables);
@@ -298,7 +439,7 @@ public class Interpreter {
 				do {
 					interpretBlock(repeatNode.statements, variables);
 					condition = evaluateBooleanExpression(repeatNode.expression, variables);
-				} while(condition);
+				} while(!condition); //until condition is true
 			}
 			else if(statements.get(i) instanceof IfNode) {
 				IfNode ifNode = (IfNode) statements.get(i);
@@ -363,8 +504,20 @@ public class Interpreter {
 		
 	}
 	
-	
+	/**
+	 * Returns boolean representing evaluation of a boolean expression.
+	 * @param expression Boolean expression.
+	 * @param variables List of variables.
+	 * @return True or false.
+	 */
 	public static boolean evaluateBooleanExpression(BooleanExpressionNode expression, HashMap<String, InterpreterDataType> variables) {
+		
+		if(expression.condition == null && expression.right == null) {
+//			System.out.println(resolveBoolean(expression.left, variables));
+//			System.out.println(expression);
+			return resolveBoolean(expression.left, variables);
+		}
+		
 		
 		//FloatNode, IntegerNode, MathOpNode, VariableReferenceNode
 		float left = 0;
@@ -401,6 +554,8 @@ public class Interpreter {
 				right = (int) resolve(expression.right, variables);
 			}
 		}
+		
+		System.out.println(left + ", " + expression.condition + ", " + right);
 				
 		switch(expression.condition) {
 		case GREATER_THAN:
