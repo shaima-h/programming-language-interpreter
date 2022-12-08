@@ -25,51 +25,51 @@ public class Shank {
 		
 		
 		
-		BufferedReader br = new BufferedReader(new FileReader("src/test.txt"));
-		String line = br.readLine();
-		
-		Lexer lexer = new Lexer();
-		List<Token> tokens = new ArrayList<>();
-		
-	    while (line != null) {
-	    	tokens.addAll(tokens.size(), lexer.lex(line));
-	    	line = br.readLine();
-	    }
-	    br.close();
-		
-		System.out.println(tokens);
-		
-		Parser parser = new Parser(tokens);
-		        
-        FunctionNode function = parser.functionDefinition();
-        
-        Interpreter.functions.put("read", new Read("read", null, true));
-        Interpreter.functions.put("write", new Write("write", null, true));
-        Interpreter.functions.put("squareRoot", new SquareRoot("squareRoot", false));
-        Interpreter.functions.put("getRandom", new GetRandom("getRandom", false));
-        Interpreter.functions.put("integerToReal", new IntegerToReal("integerToReal", false));
-        Interpreter.functions.put("realToInteger", new RealToInteger("realToInteger", false));
-        Interpreter.functions.put("left", new Left("left", false));
-        Interpreter.functions.put("right", new Right("right", false));
-        Interpreter.functions.put("substring", new Substring("substring", false));
-        
-        
-        while(function != null) {
-        	System.out.println(function.toString());
-        	
-            Interpreter.functions.put(function.name, function);
-        	function = parser.functionDefinition();
-        }
-        
-        List<InterpreterDataType> startParams = new ArrayList<>();
-        
-        if(Interpreter.functions.get("start") == null) {
-        	throw new Exception("Start function required.");
-        }
-        
-        SemanticAnalysis.checkAssignments(Interpreter.functions);
-
-        Interpreter.interpretFunction((FunctionNode) Interpreter.functions.get("start"), startParams); //no parameters?
+//		BufferedReader br = new BufferedReader(new FileReader("src/test.txt"));
+//		String line = br.readLine();
+//		
+//		Lexer lexer = new Lexer();
+//		List<Token> tokens = new ArrayList<>();
+//		
+//	    while (line != null) {
+//	    	tokens.addAll(tokens.size(), lexer.lex(line));
+//	    	line = br.readLine();
+//	    }
+//	    br.close();
+//		
+//		System.out.println(tokens);
+//		
+//		Parser parser = new Parser(tokens);
+//		        
+//        FunctionNode function = parser.functionDefinition();
+//        
+//        Interpreter.functions.put("read", new Read("read", null, true));
+//        Interpreter.functions.put("write", new Write("write", null, true));
+//        Interpreter.functions.put("squareRoot", new SquareRoot("squareRoot", false));
+//        Interpreter.functions.put("getRandom", new GetRandom("getRandom", false));
+//        Interpreter.functions.put("integerToReal", new IntegerToReal("integerToReal", false));
+//        Interpreter.functions.put("realToInteger", new RealToInteger("realToInteger", false));
+//        Interpreter.functions.put("left", new Left("left", false));
+//        Interpreter.functions.put("right", new Right("right", false));
+//        Interpreter.functions.put("substring", new Substring("substring", false));
+//        
+//        
+//        while(function != null) {
+//        	System.out.println(function);
+//        	
+//            Interpreter.functions.put(function.name, function);
+//        	function = parser.functionDefinition();
+//        }
+//        
+//        List<InterpreterDataType> startParams = new ArrayList<>();
+//        
+//        if(Interpreter.functions.get("start") == null) {
+//        	throw new Exception("Start function required.");
+//        }
+//        
+//        SemanticAnalysis.checkAssignments(Interpreter.functions);
+//
+//        Interpreter.interpretFunction((FunctionNode) Interpreter.functions.get("start"), startParams); //no parameters?
 				
 
 //		List<Node> nodes = new ArrayList<>();
@@ -87,71 +87,60 @@ public class Shank {
 //	    }
 		
 		
-//		
-//		if(args.length > 1) throw new Exception ("Only one argument allowed.");
-//		
-//		try {
-//			Lexer lexer = new Lexer();
-//			List<String> fileLines = new ArrayList<>();
-//    		List<Token> tokens = new ArrayList<>();
-//
-//            fileLines = Files.readAllLines(Paths.get(args[0]));
-//            
-//            for(int i = 0; i < fileLines.size(); i++) {
-//            	tokens.addAll(tokens.size(), lexer.lex(fileLines.get(i)));
-//            }
-//            
-//            System.out.println("TOKENS: \n" + tokens);
-//            System.out.println();
-//            
-//            Parser parser = new Parser(tokens);
-//                        
-//            FunctionNode function = parser.functionDefinition();
-//
-//            Interpreter.functions.put("read", new Read("read", null, true));
-//            Interpreter.functions.put("write", new Write("write", null, true));
-//            Interpreter.functions.put("squareRoot", new SquareRoot("squareRoot", false));
-//            Interpreter.functions.put("getRandom", new GetRandom("getRandom", false));
-//            Interpreter.functions.put("integerToReal", new IntegerToReal("integerToReal", false));
-//            Interpreter.functions.put("realToInteger", new RealToInteger("realToInteger", false));
-//            
-//            while(function != null) {
-//            	System.out.println(function.toString());
-//            	
-//                Interpreter.functions.put(function.name, function);
-//            	function = parser.functionDefinition();
-//            }
-//            
-//            List<InterpreterDataType> startParams = new ArrayList<>();
-//            
-//            if(Interpreter.functions.get("start") == null) {
-//            	throw new Exception("Start function required.");
-//            }
-//            
-//            SemanticAnalysis.checkAssignments(Interpreter.functions);
-//            
-//            Interpreter.interpretFunction((FunctionNode) Interpreter.functions.get("start"), startParams);
 		
+		if(args.length > 1) throw new Exception ("Only one argument allowed.");
 		
-//            List<Node> nodes = new ArrayList<>();
-//            nodes = parser.parse();
-//            
-//    		System.out.println("NODES: \n" + nodes);
-//    		System.out.println();
-//    		                        
-//            Interpreter interpreter = new Interpreter();
-//            
-//            System.out.println("RESOLVE: ");
-//            for(int i = 0; i < nodes.size(); i ++) { //resolving each node
-//                System.out.println(interpreter.resolve(nodes.get(i)));
-//            }
-//                        
-//            
-//		} catch (IOException ex) {
-//            System.out.println("I/O error: " + ex);
-//        } catch (Exception ex) {
-//        	System.out.println("Error: " + ex);
-//        }
+		try {
+			Lexer lexer = new Lexer();
+			List<String> fileLines = new ArrayList<>();
+    		List<Token> tokens = new ArrayList<>();
+
+            fileLines = Files.readAllLines(Paths.get(args[0]));
+            
+            for(int i = 0; i < fileLines.size(); i++) {
+            	tokens.addAll(tokens.size(), lexer.lex(fileLines.get(i)));
+            }
+            
+            System.out.println("TOKENS: \n" + tokens);
+            System.out.println();
+            
+            Parser parser = new Parser(tokens);
+                        
+            FunctionNode function = parser.functionDefinition();
+
+            Interpreter.functions.put("read", new Read("read", null, true));
+            Interpreter.functions.put("write", new Write("write", null, true));
+            Interpreter.functions.put("squareRoot", new SquareRoot("squareRoot", false));
+            Interpreter.functions.put("getRandom", new GetRandom("getRandom", false));
+            Interpreter.functions.put("integerToReal", new IntegerToReal("integerToReal", false));
+            Interpreter.functions.put("realToInteger", new RealToInteger("realToInteger", false));
+	        Interpreter.functions.put("left", new Left("left", false));
+	        Interpreter.functions.put("right", new Right("right", false));
+	        Interpreter.functions.put("substring", new Substring("substring", false));
+            
+            while(function != null) {
+            	System.out.println(function.toString());
+            	
+                Interpreter.functions.put(function.name, function);
+            	function = parser.functionDefinition();
+            }
+            
+            List<InterpreterDataType> startParams = new ArrayList<>();
+            
+            if(Interpreter.functions.get("start") == null) {
+            	throw new Exception("Start function required.");
+            }
+            
+            SemanticAnalysis.checkAssignments(Interpreter.functions);
+            
+            Interpreter.interpretFunction((FunctionNode) Interpreter.functions.get("start"), startParams);
+            
+            
+		} catch (IOException ex) {
+            System.out.println("I/O error: " + ex);
+        } catch (Exception ex) {
+        	System.out.println("Error: " + ex);
+        }
 
 	}
 

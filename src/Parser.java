@@ -85,8 +85,6 @@ public class Parser {
 		
 		node = new MathOpNode(operator, left, right);
 		
-		System.out.println("node: " + node);
-
 		if(matchAndRemove(Token.Type.GREATER_THAN) != null) {
 			operator = MathOpNode.Operator.GREATER_THAN;
 			node = new MathOpNode(operator, node, term());
@@ -521,9 +519,7 @@ public class Parser {
 	public List<StatementNode> bodyFunction() throws Exception {
 		
 		removeEndOfLines();
-		
-		System.out.println(tokens);
-		
+				
 		if(matchAndRemove(Token.Type.BEGIN) == null) {
 			throw new Exception("Missing begin in body of function.");
 		}
@@ -534,8 +530,8 @@ public class Parser {
 		
 		removeEndOfLines();
 		
-//		System.out.println("===" + tokens);
 		if(matchAndRemove(Token.Type.END) == null) {
+			System.out.println("===" + tokens);
 			throw new Exception("Missing end in body of function.");
 		}
 		matchAndRemove(Token.Type.EndOfLine);
@@ -721,9 +717,7 @@ public class Parser {
 		else {
 			throw new Exception("Invalid while block.");
 		}
-		
-		System.out.println(booleanExpNode);
-		
+				
 		List<StatementNode> statements = bodyFunction();
 		
 //		System.out.println("returned null whileFunction");
@@ -839,9 +833,7 @@ public class Parser {
 		else {
 			throw new Exception("Invalid if block.");
 		}
-		
-		System.out.println(booleanExpNode);
-		
+				
 		if(matchAndRemove(Token.Type.THEN) == null)
 			throw new Exception("Invalid if block.");
 		

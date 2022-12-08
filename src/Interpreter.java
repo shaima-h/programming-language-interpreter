@@ -65,19 +65,27 @@ public class Interpreter {
 		    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.PLUS)
 		        return leftEval + rightEval;
 		 
-		    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.MINUS)
+		    else if (((MathOpNode) root).getOperator() == MathOpNode.Operator.MINUS)
 		        return leftEval - rightEval;
 		 
-		    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.TIMES)
+		    else if (((MathOpNode) root).getOperator() == MathOpNode.Operator.TIMES)
 		        return leftEval * rightEval;
 		 
-		    return leftEval / rightEval;
+		    else if (((MathOpNode) root).getOperator() == MathOpNode.Operator.DIVIDE)
+		        return leftEval / rightEval;
+		    
+		    	
 	    }
-	    
 	    return 0;
 		
 	}
 	
+	/**
+	 * Resolves a string expression.
+	 * @param root
+	 * @param variables
+	 * @return String.
+	 */
 	public static String resolveString(Node root, HashMap<String, InterpreterDataType> variables) {
 				
 		//empty
@@ -115,7 +123,15 @@ public class Interpreter {
 	    return "";
 	}
 	
+	/**
+	 * Resolves a boolean expression.
+	 * @param root
+	 * @param variables
+	 * @return boolean.
+	 */
 	public static boolean resolveBoolean(Node root, HashMap<String, InterpreterDataType> variables) {
+		
+//		System.out.println("resolveBoolean: " + root);
 		
 		if(root instanceof BoolNode) {
     		return ((BoolNode) root).bool;
@@ -126,17 +142,32 @@ public class Interpreter {
     		}
     	}
 		
-//		 if(root instanceof MathOpNode) {
-//		    	//evaluate left subtree
-//			    boolean leftEval = resolveString(((MathOpNode) root).getLeft(), variables);
-//			 
-//			    //evaluate right subtree
-//			    String rightEval = resolveString(((MathOpNode) root).getRight(), variables);
-//			 
-//			    //check operator
-//			    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.PLUS)
-//			        return leftEval + rightEval;
-//		    }
+		 if(root instanceof MathOpNode) {
+		    	//evaluate left subtree
+			    float leftEval = resolve(((MathOpNode) root).getLeft(), variables);
+			 
+			    //evaluate right subtree
+			    float rightEval = resolve(((MathOpNode) root).getRight(), variables);
+			 
+			    //check operator
+			    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.GREATER_THAN)
+			        return leftEval > rightEval;
+			 
+			    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.LESS_THAN)
+			        return leftEval < rightEval;
+			 
+			    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.GREATER_EQUAL)
+			        return leftEval >= rightEval;
+			 
+			    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.LESS_EQUAL)
+			        return leftEval <= rightEval;
+			    
+			    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.NOT_EQUALS)
+			        return leftEval != rightEval;
+			    
+			    if (((MathOpNode) root).getOperator() == MathOpNode.Operator.EQUALS)
+			        return leftEval == rightEval;
+		    }
 		
 		return false;
 		
@@ -247,7 +278,7 @@ public class Interpreter {
 
 				CallableNode functionDef = functions.get(functionCall.name); //function definition
 				
-//				System.out.println("def:" + functionDef.parameters);
+//				System.out.println("def:" + functionDef);
 //				System.out.println(((BuiltInFunctionNode) functionDef).variadic);
 				
 				//checking if number of parameters matches
@@ -555,7 +586,7 @@ public class Interpreter {
 			}
 		}
 		
-		System.out.println(left + ", " + expression.condition + ", " + right);
+//		System.out.println(left + ", " + expression.condition + ", " + right);
 				
 		switch(expression.condition) {
 		case GREATER_THAN:

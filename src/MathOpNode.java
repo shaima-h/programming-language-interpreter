@@ -65,6 +65,25 @@ public class MathOpNode extends Node {
 		return this.right;
 	}
 	
+	public boolean booleanOperator() {
+		switch(operator) {
+		case GREATER_THAN:
+			return true;
+		case LESS_THAN:
+			return true;
+		case GREATER_EQUAL:
+			return true;
+		case LESS_EQUAL:
+			return true;
+		case NOT_EQUALS:
+			return true;
+		case EQUALS:
+			return true;
+		default:
+			return false;
+		}
+	}
+	
 	/**
 	 * Returns operator as a string.
 	 * @return String representing operator.

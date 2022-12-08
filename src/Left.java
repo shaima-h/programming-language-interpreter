@@ -1,6 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gets the first length characters of a string.
+ * @author shaimahussaini
+ */
 public class Left extends BuiltInFunctionNode {
 	
 	/*

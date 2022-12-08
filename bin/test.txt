@@ -1,15 +1,36 @@
-(* Iterative *)
-define add (x,y:integer; var  sum: integer)
+define start ()
+constants
+	pi = 3.14
 variables
-	counter : integer
+	a : integer
+	bool : boolean
+	str : string
+	chr : character
+	res_str : string
+	i : integer
+
 begin
-	counter := y
-	sum := x
-	for counter from 3*(2+10) to 50
+	
+	a := 2
+	
+	if a < 5 then 
 	begin
-		counter := counter - 1
-		sum := sum + 1
+		a := 5
+		write  "a is now 5"
 	end
 	
-	add 4, 3, var sum 
+	chr := 'H'
+	
+	str := chr + "ello World!"
+	
+	write str
+	
+	bool := a > 4
+	
+	for i from 1 to 10 
+	begin
+		left str, i, var res_str
+		write res_str
+	end
+	
 end

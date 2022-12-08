@@ -1,4 +1,8 @@
 
+/**
+ * Represents char data type at interpretation time.
+ * @author shaimahussaini
+ */
 public class CharDataType extends InterpreterDataType {
 
 	/**

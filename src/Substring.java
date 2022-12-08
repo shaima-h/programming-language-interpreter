@@ -1,6 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gets the length characters of a string starting at an index.
+ * @author shaimahussaini
+ */
 public class Substring extends BuiltInFunctionNode {
 	
 	/*

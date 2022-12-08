@@ -1,4 +1,8 @@
 
+/**
+ * Represents string data type at interpretation time.
+ * @author shaimahussaini
+ */
 public class StringDataType extends InterpreterDataType {
 
 	/**

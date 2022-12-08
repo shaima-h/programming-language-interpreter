@@ -2,7 +2,6 @@
 /**
  * Represents float data type at interpretation time.
  * @author shaimahussaini
- *
  */
 public class FloatDataType extends InterpreterDataType {
 

@@ -1,4 +1,9 @@
 
+/**
+ * Represents boolean data type at interpretation time.
+ * @author shaimahussaini
+ */
+
 public class BoolDataType extends InterpreterDataType {
 
 	/**

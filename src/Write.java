@@ -31,6 +31,15 @@ public class Write extends BuiltInFunctionNode {
 			else if(input instanceof IntDataType) {
 				System.out.print(((IntDataType) input).toString() + " ");
 			}
+			else if(input instanceof BoolDataType) {
+				System.out.print(((BoolDataType) input).toString() + " ");
+			}
+			else if(input instanceof StringDataType) {
+				System.out.print(((StringDataType) input).toString() + " ");
+			}
+			else if(input instanceof CharDataType) {
+				System.out.print(((CharDataType) input).toString() + " ");
+			}
 			
 		}
 		

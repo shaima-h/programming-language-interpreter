@@ -1,6 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Gets the last length characters of a string.
+ * @author shaimahussaini
+ */
 public class Right extends BuiltInFunctionNode {
 	
 	/*

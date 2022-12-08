@@ -1,15 +1,36 @@
-define start()
+define start ()
+constants
+	pi = 3.14
 variables
-	ans : string
-	done : boolean
-	num : integer
-	
+	a : integer
+	bool : boolean
+	str : string
+	chr : character
+	res_str : string
+	i : integer
+
 begin
 	
-	num := 0
+	a := 2
 	
-	done := num < 2	
+	if a < 5 then 
+	begin
+		a := 5
+		write  "a is now 5"
+	end
 	
+	chr := 'H'
 	
+	str := chr + "ello World!"
+	
+	write str
+	
+	bool := a > 4
+	
+	for i from 1 to 10 
+	begin
+		left str, i, var res_str
+		write res_str
+	end
 	
 end
